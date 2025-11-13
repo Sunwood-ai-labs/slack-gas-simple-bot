@@ -270,6 +270,31 @@
             flex-shrink: 0;
         }
 
+        /* Screenshot Section */
+        .screenshot-section {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .screenshot-container {
+            max-width: 900px;
+            margin: 40px auto 0;
+            text-align: center;
+        }
+
+        .screenshot-container img {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .screenshot-container img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+
         /* How It Works Section */
         .how-it-works {
             padding: 80px 20px;
@@ -512,6 +537,19 @@
                     <code>@bot_name こんにちは</code>
                     <span>→ メッセージをオウム返し</span>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshot Section -->
+    <section class="screenshot-section">
+        <div class="container">
+            <h2 class="section-title">📸 実際の動作画面</h2>
+            <p style="text-align: center; color: #616061; margin-bottom: 20px;">
+                Slackでの実際のボット動作例をご覧ください
+            </p>
+            <div class="screenshot-container scroll-animation">
+                <img src="https://raw.githubusercontent.com/Sunwood-ai-labs/slack-gas-simple-bot/refs/heads/main/2025-11-14-010629.png" alt="Slack GAS Simple Bot 動作スクリーンショット">
             </div>
         </div>
     </section>
