@@ -27,6 +27,7 @@
 - 🚀 **サーバーレス**: Google Apps Scriptで動作するため、サーバー管理不要
 - 💬 **メンション対応**: Slackワークスペース内でボットにメンションすると反応
 - 🎯 **シンプルなコマンド**: hello, help, timeなどの基本コマンドをサポート
+- 🔄 **オウム返し機能**: キーワード以外のメッセージをそのまま返す
 - 🔐 **セキュアな設定**: スクリプトプロパティを使用したトークン管理
 - ⚡ **簡単デプロイ**: GASのWebアプリとして簡単にデプロイ可能
 
@@ -48,7 +49,7 @@
 
 ### 2. コードの配置
 
-1. `コード.gs` ファイルにこのリポジトリの `コード.gs` の内容をコピー
+1. `code.gs` ファイルにこのリポジトリの `code.gs` の内容をコピー
 2. `appsscript.json` の設定を確認・適用
 
 ### 3. Slack Appの作成と設定
@@ -121,6 +122,7 @@ Slackワークスペース内で、ボットをメンションして以下のよ
 | `hello` / `hi` | 挨拶を返す | `@bot_name hello` → `Hello!` |
 | `help` | 利用可能なコマンド一覧を表示 | `@bot_name help` |
 | `time` | 現在時刻を返す | `@bot_name time` → `Current time is: ...` |
+| その他 | キーワード以外のメッセージはオウム返し | `@bot_name こんにちは` → `こんにちは` |
 
 ## ⚙️ 環境変数
 
@@ -151,9 +153,14 @@ function processMessage(text) {
     return 'Hello!';
   } else if (lowerText.includes('weather')) {
     return 'Today is sunny!'; // 新しいコマンドの例
+  } else if (lowerText.includes('help')) {
+    return 'Available commands: hello, help, time, weather';
+  } else if (lowerText.includes('time')) {
+    return 'Current time is: ' + new Date();
   }
 
-  return 'Sorry, I do not understand that command.';
+  // キーワード以外はオウム返し（メンション部分を除去）
+  return text.replace(/<@[A-Z0-9]+>/g, '').trim();
 }
 ```
 
