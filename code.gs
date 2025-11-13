@@ -36,19 +36,28 @@ function doPost(e) {
   }
 }
 
-function processMessage(text) {
-  const lowerText = text.toLowerCase();
+// コマンドをオブジェクトとして定義
+const commands = {
+  'hello': () => 'Hello!',
+  'hi': () => 'Hello!', // 'hello' と同じレスポンス
+  'help': () => 'Available commands: hello, help, time',
+  'time': () => 'Current time is: ' + new Date(),
+};
 
-  if (lowerText.includes('hello') || lowerText.includes('hi')) {
-    return 'Hello!';
-  } else if (lowerText.includes('help')) {
-    return 'Available commands: hello, help, time';
-  } else if (lowerText.includes('time')) {
-    return 'Current time is: ' + new Date();
+function processMessage(text) {
+  // 1. 最初にメンションを除去
+  const cleanText = text.replace(/<@[A-Z0-9]+>/g, '').trim();
+  const lowerText = cleanText.toLowerCase();
+
+  // 2. コマンドオブジェクトをループしてキーワードをチェック
+  for (const keyword of Object.keys(commands)) {
+    if (lowerText.includes(keyword)) {
+      return commands[keyword]();
+    }
   }
 
-  // キーワード以外はオウム返し（メンション部分を除去）
-  return text.replace(/<@[A-Z0-9]+>/g, '').trim();
+  // 3. 一致するコマンドがなければ、クリーンなテキストをオウム返し
+  return cleanText;
 }
 
 function sendMessage(channelId, message) {

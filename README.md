@@ -143,26 +143,38 @@ WEBHOOK_SECRET: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (任意)
 
 ## 📝 コードの拡張
 
-`processMessage()` 関数を編集することで、簡単に新しいコマンドを追加できます：
+`commands` オブジェクトに新しいキーワードと関数を追加することで、簡単に新しいコマンドを追加できます：
 
 ```javascript
-function processMessage(text) {
-  const lowerText = text.toLowerCase();
+// コマンドをオブジェクトとして定義
+const commands = {
+  'hello': () => 'Hello!',
+  'hi': () => 'Hello!',
+  'help': () => 'Available commands: hello, help, time, weather',
+  'time': () => 'Current time is: ' + new Date(),
+  'weather': () => 'Today is sunny!', // 新しいコマンドの例
+};
 
-  if (lowerText.includes('hello') || lowerText.includes('hi')) {
-    return 'Hello!';
-  } else if (lowerText.includes('weather')) {
-    return 'Today is sunny!'; // 新しいコマンドの例
-  } else if (lowerText.includes('help')) {
-    return 'Available commands: hello, help, time, weather';
-  } else if (lowerText.includes('time')) {
-    return 'Current time is: ' + new Date();
+function processMessage(text) {
+  // 1. 最初にメンションを除去
+  const cleanText = text.replace(/<@[A-Z0-9]+>/g, '').trim();
+  const lowerText = cleanText.toLowerCase();
+
+  // 2. コマンドオブジェクトをループしてキーワードをチェック
+  for (const keyword of Object.keys(commands)) {
+    if (lowerText.includes(keyword)) {
+      return commands[keyword]();
+    }
   }
 
-  // キーワード以外はオウム返し（メンション部分を除去）
-  return text.replace(/<@[A-Z0-9]+>/g, '').trim();
+  // 3. 一致するコマンドがなければ、クリーンなテキストをオウム返し
+  return cleanText;
 }
 ```
+
+この設計により、以下の利点があります：
+- メンション部分を除去してからキーワード判定するため、誤認識を防ぎます
+- コマンドの定義が一箇所にまとまり、追加や修正が容易です
 
 ## 🤝 コントリビューション
 
