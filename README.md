@@ -115,6 +115,16 @@ Slackワークスペース内で、ボットをメンションして以下のよ
 @bot_name time
 ```
 
+### 📸 動作画面
+
+実際のSlackでの動作例：
+
+<div align="center">
+
+![動作スクリーンショット](https://raw.githubusercontent.com/Sunwood-ai-labs/slack-gas-simple-bot/refs/heads/main/2025-11-14-010629.png)
+
+</div>
+
 ### 利用可能なコマンド
 
 | コマンド | 説明 | 例 |
