@@ -1,5 +1,7 @@
 <div align="center">
 
+![](Whisk_8e08477062d01b09a5d49509d124cd89dr.jpeg)
+
 # 🤖 Slack GAS Simple Bot
 
 **Google Apps ScriptでシンプルなSlackボットを構築**
