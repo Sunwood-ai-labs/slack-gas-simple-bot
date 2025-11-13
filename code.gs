@@ -47,7 +47,8 @@ function processMessage(text) {
     return 'Current time is: ' + new Date();
   }
 
-  return 'Sorry, I do not understand that command.';
+  // キーワード以外はオウム返し（メンション部分を除去）
+  return text.replace(/<@[A-Z0-9]+>/g, '').trim();
 }
 
 function sendMessage(channelId, message) {
