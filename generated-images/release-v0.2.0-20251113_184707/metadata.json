@@ -1,0 +1,11 @@
+{
+  "generation_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "prompt": "A Bioluminescent Forest Reverie featuring a radiant, self-glowing woodland stag with the phrase “𝘴𝘭𝘢𝘤𝘬 𝘨𝘢𝘴 𝘴𝘪𝘮𝘱𝘭𝘦 𝘣𝘰𝘵 - v0\.2\.0 -” drifting behind it like bioluminescent runes, where trees and flora emit an ethereal glow. Use a palette dominated by deep midnight blue for the background, with emerald lime accents for the glowing elements, creating a magical nocturnal scene.",
+  "model": "imagen-4-ultra",
+  "num_images": 1,
+  "aspect_ratio": "16:9",
+  "seed": "",
+  "workflow_run": "2",
+  "commit_sha": "3c457d165e678c8f01cbd01bf2734ec01b570975",
+  "tag": "v0.2.0"
+}
