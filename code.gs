@@ -22,9 +22,17 @@ function doPost(e) {
       const userId   = payload.event.user;
       const channelId = payload.event.channel;
       const text     = payload.event.text;
+      const threadTs = payload.event.thread_ts || payload.event.ts; // スレッドのタイムスタンプを取得
 
       const response = processMessage(text);
-      sendMessage(channelId, '<@' + userId + '> ' + response);
+
+      // メンションを追加
+      const messageData = {
+        ...response,
+        text: (response.text ? '<@' + userId + '> ' + response.text : '<@' + userId + '>')
+      };
+
+      sendMessage(channelId, messageData, threadTs);
     }
 
     return ContentService.createTextOutput('ok');
@@ -38,11 +46,105 @@ function doPost(e) {
 
 // コマンドをオブジェクトとして定義
 const commands = {
-  'hello': () => 'Hello!',
-  'hi': () => 'Hello!', // 'hello' と同じレスポンス
-  'help': () => 'Available commands: hello, help, time',
-  'time': () => 'Current time is: ' + new Date(),
+  'hello': () => ({ text: 'Hello!' }),
+  'hi': () => ({ text: 'Hello!' }), // 'hello' と同じレスポンス
+  'help': () => createHelpMessage(),
+  'time': () => createTimeMessage(),
 };
+
+// おしゃれなHelp表示
+function createHelpMessage() {
+  return {
+    blocks: [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: '🤖 Available Commands',
+          emoji: true
+        }
+      },
+      {
+        type: 'divider'
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: '*👋 hello / hi*\n挨拶を返します'
+        }
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: '*❓ help*\n利用可能なコマンドを表示します'
+        }
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: '*🕐 time*\n現在の時刻を表示します'
+        }
+      },
+      {
+        type: 'divider'
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: '💡 _Tip: メンション付きでコマンドを送信してください_'
+          }
+        ]
+      }
+    ]
+  };
+}
+
+// おしゃれな時間表示
+function createTimeMessage() {
+  const now = new Date();
+  const formatter = Utilities.formatDate(now, 'Asia/Tokyo', 'yyyy年MM月dd日 HH:mm:ss');
+  const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'][now.getDay()];
+
+  return {
+    blocks: [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: '🕐 Current Time',
+          emoji: true
+        }
+      },
+      {
+        type: 'section',
+        fields: [
+          {
+            type: 'mrkdwn',
+            text: `*日時:*\n${formatter} (${dayOfWeek})`
+          },
+          {
+            type: 'mrkdwn',
+            text: `*タイムゾーン:*\nAsia/Tokyo (JST)`
+          }
+        ]
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: `⏰ Unix Timestamp: \`${now.getTime()}\``
+          }
+        ]
+      }
+    ]
+  };
+}
 
 function processMessage(text) {
   // 1. 最初にメンションを除去
@@ -57,16 +159,25 @@ function processMessage(text) {
   }
 
   // 3. 一致するコマンドがなければ、クリーンなテキストをオウム返し
-  return cleanText;
+  return { text: cleanText };
 }
 
-function sendMessage(channelId, message) {
+function sendMessage(channelId, messageData, threadTs) {
   const url = 'https://slack.com/api/chat.postMessage';
 
+  // メッセージデータの構築
   const payload = {
     channel: channelId,
-    text: message,
+    thread_ts: threadTs, // スレッドのタイムスタンプを追加
   };
+
+  // messageDataがオブジェクトの場合、そのプロパティをマージ
+  if (typeof messageData === 'object' && messageData !== null) {
+    Object.assign(payload, messageData);
+  } else {
+    // 文字列の場合はtextとして設定
+    payload.text = messageData;
+  }
 
   const options = {
     method: 'post',
